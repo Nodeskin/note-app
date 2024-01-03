@@ -7,7 +7,7 @@ type Note = {
   content: string;
 }
 
-function App() {
+  function App() {
   const [notes, setNotes] = useState([
     {
     id: 1,
@@ -52,7 +52,6 @@ function App() {
     title: title,
     content: content,
   }
-
   setNotes([newNote, ...notes]);
   setTitle("");
   setContent("");
@@ -62,24 +61,26 @@ const handleUpdateNote = (
   event: React.FormEvent
   )=> {
     event.preventDefault();
-
+//If not selected note return nothing
     if(!selectedNote){
       return;
     }
 
+// Else populate the note with this;    
     const updateNote: Note = {
       id: selectedNote.id,
       title: title,
       content: content,
     }
-
-    const updateNoteList = notes.map((note)=>
+// Update the noteList by running a map on the notes and 
+//only updateNote on note.id === selectedNote.id
+    const updatedNoteList = notes.map((note)=>
     note.id === selectedNote.id
      ? updateNote
      :note   
     )
 
-    setNotes(updateNoteList)
+    setNotes(updatedNoteList)
     setTitle("")
     setContent("")
     setSelectedNote(null)
@@ -117,7 +118,7 @@ const handleCancel = () =>{
         <button onClick={handleCancel} > Cancel</button>
       </div>
     ):(
-      <button type='submit'>
+      <button type='submit' onClick={handleAddNote}>
       Add Note
       </button>  )}
 
