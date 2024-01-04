@@ -34,8 +34,10 @@ type Note = {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [selectedNote, setSelectedNote] = 
-  useState<Note | null>(null)
+  useState<Note | null>(null);
 
+  // onClick of HandleNoteClick, sets selectedNote to display the save and cancel button
+  // populates the title and content...
   const handleNoteClick = (note:Note) =>{
     setSelectedNote(note);
     setTitle(note.title);
@@ -50,7 +52,7 @@ type Note = {
   const newNote:Note = {
     id: notes.length + 1,
     title: title,
-    content: content,
+    content: content, 
   }
   setNotes([newNote, ...notes]);
   setTitle("");
@@ -65,7 +67,6 @@ const handleUpdateNote = (
     if(!selectedNote){
       return;
     }
-
 // Else populate the note with this;    
     const updateNote: Note = {
       id: selectedNote.id,
@@ -91,13 +92,29 @@ const handleCancel = () =>{
   setTitle("")
   setContent("")
   setSelectedNote(null)
+};
+
+const deleteNote = (
+  event: React.MouseEvent,
+  noteId: number,
+  )=>{
+    // e.stopPropagation is called to stop the event from 
+    //reaching any other event listeners on parent or child element
+    event.stopPropagation();
+  const updatedNotes = notes.filter((note)=> note.id !== noteId);
+  setNotes(updatedNotes)
 }
+
 
 
   return (
     <div className="app-container">
      <form className='note-form'
-    //  onSubmit={(event)=> handleSubmit(event)}
+     onSubmit={(event)=> 
+      selectedNote
+      ? handleUpdateNote(event)
+       : handleAddNote(event)
+    }
      >
     <input type="text"
     placeholder='title'
@@ -111,6 +128,8 @@ const handleCancel = () =>{
     placeholder='Content'
     rows={10}
     required
+    // Required is set to take advantage of the message that 
+    // the form element will set if the fields are empty
     /> 
     {selectedNote ? (
       <div className="edit-buttons">
@@ -118,7 +137,7 @@ const handleCancel = () =>{
         <button onClick={handleCancel} > Cancel</button>
       </div>
     ):(
-      <button type='submit' onClick={handleAddNote}>
+      <button type='submit'>
       Add Note
       </button>  )}
 
@@ -130,7 +149,7 @@ const handleCancel = () =>{
            onClick={() => handleNoteClick(note)}
            >
          <div className="notes-header">
-           <button>x</button>
+           <button onClick={(event)=> deleteNote(event, note.id)} >x</button>
          </div>
          <h2>{note.title}</h2>
          <p>{note.content}</p>
